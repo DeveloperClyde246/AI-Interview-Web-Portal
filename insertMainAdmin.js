@@ -18,6 +18,6 @@ Admin.findByIdAndUpdate(
     mongoose.disconnect();
   })
   .catch((err) => {
-    console.error("❌ Error updating admin:", err);
+    console.error("Error updating admin:", err);
     mongoose.disconnect();
   });

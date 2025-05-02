@@ -3,7 +3,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const Notification = require("../models/Notification");
 const Interview = require("../models/Interview");
 const User = require("../models/User");
-const Candidate = require("../models/candidate");
+const Candidate = require("../models/Candidate");
 const Recruiter = require("../models/Recruiter"); 
 const mongoose = require("mongoose");
 
@@ -14,11 +14,11 @@ router.use(authMiddleware(["recruiter"]));
 
 
 //---------------Dashboard page------------------//
-// ✅ Recruiter Dashboard (GET all notifications + interviews)
+// Recruiter Dashboard (GET all notifications + interviews)
 //Recruiter Dashboard Route
 router.get("/", async (req, res) => {
   try {
-    console.log("📥 Recruiter dashboard accessed");
+    console.log("Recruiter dashboard accessed");
     const recruiterId = req.user.id;
     const now       = new Date();
     const nextDay   = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24h ahead
@@ -89,7 +89,7 @@ router.get("/", async (req, res) => {
       interviews,
     });
   } catch (error) {
-    console.error("❌ Error loading recruiter dashboard:", error);
+    console.error("Error loading recruiter dashboard:", error);
     res.status(500).json({ message: "Error loading dashboard" });
   }
 });
@@ -103,7 +103,7 @@ router.get("/notifications/:id", async (req, res) => {
 
     res.json({ notification });
   } catch (error) {
-    console.error("❌ Error fetching notification details:", error.message);
+    console.error("Error fetching notification details:", error.message);
     res.status(500).json({ message: "Error fetching notification details" });
   }
 });
@@ -123,7 +123,7 @@ router.delete("/notifications/:id/delete", async (req, res) => {
       const diffMs        = interviewDate - nowMs;
 
       console.log(
-        `🔍 interviewDate: ${interviewDate}, now: ${nowMs}, diffMs: ${diffMs}`
+        `interviewDate: ${interviewDate}, now: ${nowMs}, diffMs: ${diffMs}`
       );
 
       // If the interview is in the future and ≤ 24h away, block the delete
@@ -139,36 +139,36 @@ router.delete("/notifications/:id/delete", async (req, res) => {
     await Notification.findByIdAndDelete(req.params.id);
     res.json({ message: "Notification deleted successfully" });
   } catch (error) {
-    console.error("❌ Error deleting notification:", error.message);
+    console.error("Error deleting notification:", error.message);
     res.status(500).json({ message: "Error deleting notification" });
   }
 });
 
 
 //Create Interview pages
-// ✅ Fetch candidates for create-interview page
+// Fetch candidates for create-interview page
 router.get("/create-interview", async (req, res) => {
   try {
     const users = await User.find({ role: "candidate" });
     res.json({ candidates: users });
   } catch (error) {
-    console.error("❌ Error fetching users:", error.message);
+    console.error("Error fetching users:", error.message);
     res.status(500).json({ message: "Error loading users" });
   }
 });
 
-// ✅ Create new interview
+// Create new interview
 router.post("/create-interview", async (req, res) => {
   const { title, description, scheduled_date, questions, answerDuration, candidateIds } = req.body;
   const recruiterId = req.user.id;
 
   try {
-    // ✅ Validate if questions is an array of objects
+    // Validate if questions is an array of objects
     if (!Array.isArray(questions) || questions.some(q => typeof q !== "object" || !q.questionText)) {
       return res.status(400).json({ message: "Invalid questions format" });
     }
 
-    // ✅ Map questions correctly
+    // Map questions correctly
     const formattedQuestions = questions.map((q) => ({
       questionText: q.questionText,
       answerType: q.answerType || "text",
@@ -181,7 +181,7 @@ router.post("/create-interview", async (req, res) => {
     const parsedDate = new Date(scheduled_date);
     //const localDate = new Date(parsedDate.getTime() - parsedDate.getTimezoneOffset() * 60000); 
 
-    // ✅ Create new interview with formatted questions
+    // Create new interview with formatted questions
     const interview = new Interview({
       recruiterId,
       title,
@@ -195,13 +195,13 @@ router.post("/create-interview", async (req, res) => {
     await interview.save();
     res.status(201).json({ message: "Interview created successfully" });
   } catch (error) {
-    console.error("❌ Error creating interview:", error.message);
+    console.error("Error creating interview:", error.message);
     res.status(500).json({ message: "Error creating interview" });
   }
 });
 
 //---------------View interview pages------------------//
-// ✅ Get all interviews for this recruiter
+// Get all interviews for this recruiter
 router.get("/interviews", async (req, res) => {
   try {
     const recruiterId = req.user.id;
@@ -211,14 +211,14 @@ router.get("/interviews", async (req, res) => {
 
     res.json({ interviews });
   } catch (error) {
-    console.error("❌ Error loading interviews:", error.message);
+    console.error("Error loading interviews:", error.message);
     res.status(500).json({ message: "Error loading interviews" });
   }
 });
 
 
 //----------------Edit interview pages------------------//
-// ✅ Get a single interview
+// Get a single interview
 router.get("/interview/:id", async (req, res) => {
   try {
     const interview = await Interview.findById(req.params.id).populate("candidates", "name email");
@@ -227,12 +227,12 @@ router.get("/interview/:id", async (req, res) => {
     const allCandidates = await User.find({ role: "candidate" });
     res.json({ interview, allCandidates });
   } catch (error) {
-    console.error("❌ Error fetching interview details:", error.message);
+    console.error("Error fetching interview details:", error.message);
     res.status(500).json({ message: "Error fetching interview details" });
   }
 });
 
-// ✅ Add candidates to interview
+// Add candidates to interview
 router.post("/interview/:id/add-candidates", async (req, res) => {
   try {
     const { candidateIds } = req.body;
@@ -246,23 +246,23 @@ router.post("/interview/:id/add-candidates", async (req, res) => {
 
     res.json({ message: "Candidates added" });
   } catch (error) {
-    console.error("❌ Error adding candidates:", error.message);
+    console.error("Error adding candidates:", error.message);
     res.status(500).json({ message: "Error adding candidates" });
   }
 });
 
-// ✅ Delete interview
+// Delete interview
 router.post("/interview/:id/delete", async (req, res) => {
   try {
     await Interview.findByIdAndDelete(req.params.id);
     res.json({ message: "Interview deleted" });
   } catch (error) {
-    console.error("❌ Error deleting interview:", error.message);
+    console.error("Error deleting interview:", error.message);
     res.status(500).json({ message: "Error deleting interview" });
   }
 });
 
-// ✅ Unassign candidate
+// Unassign candidate
 router.post("/interview/:id/unassign-candidate", async (req, res) => {
   try {
     const { candidateId } = req.body;
@@ -272,23 +272,23 @@ router.post("/interview/:id/unassign-candidate", async (req, res) => {
 
     res.json({ message: "Candidate unassigned" });
   } catch (error) {
-    console.error("❌ Error unassigning candidate:", error.message);
+    console.error("Error unassigning candidate:", error.message);
     res.status(500).json({ message: "Error unassigning candidate" });
   }
 });
 
-// ✅ Edit interview (Questions, Title, Description, Date, and Duration)
+// Edit interview (Questions, Title, Description, Date, and Duration)
 router.post("/interview/:id/edit", async (req, res) => {
   try {
     const { title, description, scheduled_date, questions, answerTypes, answerDuration } = req.body;
 
-    // ✅ Map questions correctly
+    // Map questions correctly
     const formattedQuestions = questions.map((q, index) => ({
       questionText: q,
       answerType: answerTypes[index],
     }));
 
-    // ✅ Update interview details with questions, title, description, date, and duration
+    // Update interview details with questions, title, description, date, and duration
     await Interview.findByIdAndUpdate(req.params.id, {
       title,
       description,
@@ -299,14 +299,14 @@ router.post("/interview/:id/edit", async (req, res) => {
 
     res.json({ message: "Interview updated" });
   } catch (error) {
-    console.error("❌ Error updating interview:", error.message);
+    console.error("Error updating interview:", error.message);
     res.status(500).json({ message: "Error updating interview" });
   }
 });
 
 
 //---------------view results pages------------------//
-// ✅ View AI analysis results
+// View AI analysis results
 router.get("/interview-results", async (req, res) => {
   try {
     const recruiterId = req.user.id;
@@ -318,14 +318,14 @@ router.get("/interview-results", async (req, res) => {
 
     res.json({ interviews });
   } catch (error) {
-    console.error("❌ Error loading interview results:", error.message);
+    console.error("Error loading interview results:", error.message);
     res.status(500).json({ message: "Error loading results" });
   }
 });
 
 
 
-// ✅ Delete candidate response for an interview
+// Delete candidate response for an interview
 router.post("/interview/:interviewId/delete-response", async (req, res) => {
   try {
     const { candidateId } = req.body;
@@ -336,7 +336,7 @@ router.post("/interview/:interviewId/delete-response", async (req, res) => {
 
     res.json({ message: "Response deleted successfully" });
   } catch (error) {
-    console.error("❌ Error deleting response:", error.message);
+    console.error("Error deleting response:", error.message);
     res.status(500).json({ message: "Error deleting response" });
   }
 });
@@ -400,7 +400,7 @@ router.get(
 );
 
 //---------------Profile------------------//
-// ✅ Get Recruiter Profile
+// Get Recruiter Profile
 router.get("/profile", async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -412,12 +412,12 @@ router.get("/profile", async (req, res) => {
 
     res.json({ user, recruiter });
   } catch (error) {
-    console.error("❌ Error loading recruiter profile:", error.message);
+    console.error("Error loading recruiter profile:", error.message);
     res.status(500).json({ message: "Error loading recruiter profile" });
   }
 });
 
-// ✅ Edit Recruiter Profile
+// Edit Recruiter Profile
 router.post("/profile/edit", async (req, res) => {
   const { name, email, contactNumber, jobTitle } = req.body;
 
@@ -427,7 +427,7 @@ router.post("/profile/edit", async (req, res) => {
 
     res.status(200).json({ message: "Profile updated successfully" });
   } catch (error) {
-    console.error("❌ Error updating recruiter profile:", error.message);
+    console.error("Error updating recruiter profile:", error.message);
     res.status(500).json({ message: "Error updating profile" });
   }
 });

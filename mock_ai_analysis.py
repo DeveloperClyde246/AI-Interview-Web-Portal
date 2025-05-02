@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import random  # Simulating AI Analysis for now
+import random  
 
 app = Flask(__name__)
 

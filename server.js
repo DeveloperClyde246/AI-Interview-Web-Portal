@@ -10,9 +10,9 @@ dotenv.config();
 const app = express();
 
 // Middleware setup
-// ✅ Increase request size limits for video uploads
-app.use(express.json({ limit: "200mb" })); // ✅ Allows large JSON requests
-app.use(express.urlencoded({ extended: true, limit: "200mb" })); // ✅ Allows large form submissions
+// Increase request size limits for video uploads
+app.use(express.json({ limit: "200mb" })); // Allows large JSON requests
+app.use(express.urlencoded({ extended: true, limit: "200mb" })); // Allows large form submissions
 app.use(cookieParser());
 
 // Set up EJS for templating
@@ -21,7 +21,7 @@ app.set("views", "./views");
 app.use(expressLayouts);
 app.use(express.static("public"));
 
-app.use("/uploads", express.static("uploads")); // ✅ Serve uploaded files
+app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
 //Connect to React
 app.use(cors({
@@ -32,8 +32,8 @@ app.use(cors({
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch(err => console.error("❌ MongoDB Connection Error:", err));
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.error("MongoDB Connection Error:", err));
 
 //--------------All above is just initial setup, import libraries, wont change much, not so important--------------------------------------------------------------------
 
@@ -76,4 +76,4 @@ app.get("/recruiter", authMiddleware(["recruiter"]), (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

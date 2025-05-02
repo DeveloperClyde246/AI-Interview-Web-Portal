@@ -130,7 +130,7 @@ const CandidateAnswer = () => {
         recorder.start();
       })
       .catch((error) => {
-        console.error("❌ Error accessing camera:", error);
+        console.error("Error accessing camera:", error);
       });
   };
   
@@ -171,7 +171,7 @@ const CandidateAnswer = () => {
         const data = await res.json();
         setRecordedVideos((prev) => ({ ...prev, [index]: data.secure_url }));
       } catch (err) {
-        console.error("❌ Error uploading video:", err);
+        console.error("Error uploading video:", err);
       } finally {
         setIsUploading(false);
       }
@@ -234,7 +234,7 @@ const CandidateAnswer = () => {
       if (err.response && err.response.status === 400) {
         alert(err.response.data.message || "Please wait for analysis to complete");
       } else {
-        console.error("❌ Error submitting answers:", err);
+        console.error("Error submitting answers:", err);
         alert("Error submitting answers. Please try again.");
       }
     }

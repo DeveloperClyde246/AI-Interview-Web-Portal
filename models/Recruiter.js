@@ -10,7 +10,7 @@ const RecruiterSchema = new mongoose.Schema({
 
   jobTitle: {
     type: String,
-    required: true, // Job title is required
+    required: true, 
   },
 
   contactNumber: {

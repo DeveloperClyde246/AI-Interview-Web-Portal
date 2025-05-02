@@ -45,7 +45,7 @@ const RecruiterNotificationDetails = () => {
           }
         }
       } catch (err) {
-        console.error("❌ Error fetching notification:", err);
+        console.error("Error fetching notification:", err);
         setError("Error fetching notification.");
       }
     };
@@ -61,7 +61,7 @@ const RecruiterNotificationDetails = () => {
       );
 
       if (res.status === 200) {
-        alert("✅ Notification deleted successfully!");
+        alert("Notification deleted successfully!");
         navigate("/recruiter");
       }
     } catch (err) {
@@ -71,7 +71,7 @@ const RecruiterNotificationDetails = () => {
             "You cannot delete this notification because the interview is happening within 24 hours."
         );
       } else {
-        console.error("❌ Error deleting notification:", err);
+        console.error("Error deleting notification:", err);
         alert("Error deleting notification. Please try again.");
       }
     }

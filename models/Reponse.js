@@ -8,7 +8,7 @@ const ResponseSchema = new Schema({
   marks:         { type: Number, default: null },
   status:        { type: String, enum: ["pending","submitted","submitted late"], default: "pending" },
   submitDateTime:{ type: Date },
-  analysis: {                     // ← now an array of Mixed
+  analysis: {                     
     type: [Schema.Types.Mixed],
     default: []
   }

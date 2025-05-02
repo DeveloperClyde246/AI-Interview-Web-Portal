@@ -16,7 +16,7 @@ const NotificationSchema = new mongoose.Schema({
     enum: ["unread", "read"],
     default: "unread"
   },
-  // ← NEW field to store the related interview’s scheduled date
+
   interviewDate: {
     type: Date,
     default: null
@@ -27,6 +27,4 @@ const NotificationSchema = new mongoose.Schema({
   }
 });
 
-// If you ever want one notification per candidate/video, you could
-// also make `interviewDate` required, but default:null is fine too.
 module.exports = mongoose.model("Notification", NotificationSchema);

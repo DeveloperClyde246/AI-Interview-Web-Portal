@@ -2,11 +2,11 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const Candidate = require("../models/candidate");
+const Candidate = require("../models/Candidate");
 
 const router = express.Router();
 
-// ✅ Who is logged in (used by frontend after login)
+// Who is logged in (used by frontend after login)
 router.get("/me", (req, res) => {
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ message: "Not logged in" });
@@ -19,7 +19,7 @@ router.get("/me", (req, res) => {
   }
 });
 
-// ✅ Register a new user (candidate by default)
+// Register a new user (candidate by default)
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
   const role = "candidate"; // All new users default to candidate
@@ -39,7 +39,7 @@ router.post("/register", async (req, res) => {
     const newUser = new User({ name, email, password: hashedPassword, role });
     await newUser.save();
 
-    // ✅ Create candidate profile with default fields
+    // Create candidate profile with default fields
     if (role === "candidate") {
       await Candidate.create({
         userId: newUser._id,
@@ -58,7 +58,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// ✅ Login (React sends credentials)
+// Login (React sends credentials)
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -79,7 +79,7 @@ router.post("/login", async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "lax",
-      secure: false, // use true in production with HTTPS
+      secure: false, 
     });
 
     res.cookie("username", user.name, { httpOnly: true });
@@ -92,7 +92,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// ✅ Logout
+// Logout
 router.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.clearCookie("username");
@@ -108,8 +108,3 @@ router.post("/logout", (req, res) => {
 
 module.exports = router;
   
-  // The  /me  route is used by the frontend to check if a user is logged in. It reads the JWT token from the cookie, verifies it, and sends back the username and role. 
-  // The  /register  route is used to register a new user. It checks if the email is valid and not already in use, hashes the password, and saves the user to the database. 
-  // The  /login  route is used to log in a user. It checks if the email exists and the password is correct, then creates a JWT token and sets it as a cookie. It also sets the username and role as cookies for easy access in the frontend. 
-  // The  /logout  route is used to log out a user. It clears the cookies and sends a response. 
-  // Now, let’s add these routes to the main Express app.

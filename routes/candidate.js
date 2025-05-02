@@ -9,7 +9,7 @@ const multer = require("multer");
 const cloudinary = require("../config/cloudinary");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const axios = require("axios");
-const Candidate = require("../models/candidate");
+const Candidate = require("../models/Candidate");
 
 const router = express.Router();
 
@@ -27,7 +27,7 @@ const { v4: uuidv4 } = require('uuid');
 router.use(authMiddleware(["candidate"]));
 
 //---------------dashbooard page------------------//
-// ✅ Candidate Dashboard - Get notifications and interviews
+// Candidate Dashboard - Get notifications and interviews
 router.get("/", async (req, res) => {
   try {
     const candidateId = new mongoose.Types.ObjectId(req.user.id);
@@ -44,12 +44,12 @@ router.get("/", async (req, res) => {
 
     res.json({ username: req.cookies.username, notifications, interviews });
   } catch (error) {
-    console.error("❌ Error loading candidate dashboard:", error.message);
+    console.error("Error loading candidate dashboard:", error.message);
     res.status(500).json({ message: "Error loading dashboard" });
   }
 });
 
-// ✅ Get Notification Details
+// Get Notification Details
 router.get("/notifications/:id", async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);
@@ -57,7 +57,7 @@ router.get("/notifications/:id", async (req, res) => {
 
     res.json({ notification });
   } catch (error) {
-    console.error("❌ Error fetching notification details:", error.message);
+    console.error("Error fetching notification details:", error.message);
     res.status(500).json({ message: "Error fetching notification details" });
   }
 });
@@ -84,7 +84,7 @@ router.delete("/notifications/:id/delete", async (req, res) => {
 
 
 //---------------profile pages------------------//
-// ✅ Get Candidate Profile
+// Get Candidate Profile
 router.get("/profile", async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -97,12 +97,12 @@ router.get("/profile", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error loading profile:", error.message);
+    console.error("Error loading profile:", error.message);
     res.status(500).json({ message: "Error loading profile" });
   }
 });
 
-// ✅ Update Profile
+// Update Profile
 router.post("/profile/edit", async (req, res) => {
   const {
     name,
@@ -132,13 +132,13 @@ router.post("/profile/edit", async (req, res) => {
 
     res.status(200).json({ message: "Profile updated successfully" });
   } catch (error) {
-    console.error("❌ Error updating profile:", error.message);
+    console.error("Error updating profile:", error.message);
     res.status(500).json({ message: "Error updating profile" });
   }
 });
 
 
-// ✅ Update Candidate Password
+// Update Candidate Password
 router.post("/profile/edit-password", async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
@@ -157,7 +157,7 @@ router.post("/profile/edit-password", async (req, res) => {
 
     res.json({ message: "Password updated successfully" });
   } catch (error) {
-    console.error("❌ Error updating password:", error.message);
+    console.error("Error updating password:", error.message);
     res.status(500).json({ message: "Error updating password" });
   }
 });
@@ -165,7 +165,7 @@ router.post("/profile/edit-password", async (req, res) => {
 
 
 //---------------answer pages------------------//
-// ✅ Get Assigned Interviews
+// Get Assigned Interviews
 router.get("/interviews", async (req, res) => {
   try {
     const candidateId = new mongoose.Types.ObjectId(req.user.id);
@@ -188,25 +188,25 @@ router.get("/interviews", async (req, res) => {
 
     res.json({ interviews: interviewsWithStatus });
   } catch (error) {
-    console.error("❌ Error fetching interviews:", error.message);
+    console.error("Error fetching interviews:", error.message);
     res.status(500).json({ message: "Error fetching interviews" });
   }
 });
 
 
-// ✅ Get Interview Details and Status
+// Get Interview Details and Status
 router.get("/interview/:id", async (req, res) => {
   try {
     const candidateId = req.user.id;
 
-    // ✅ Populate recruiter details
+    // Populate recruiter details
     const interview = await Interview.findById(req.params.id).populate("recruiterId", "name email");
 
     if (!interview) {
       return res.status(404).json({ message: "Interview not found" });
     }
 
-    // ✅ Find candidate response (if any)
+    // Find candidate response (if any)
     const response = interview.responses.find(
       (res) => res.candidate.toString() === candidateId
     );
@@ -214,16 +214,16 @@ router.get("/interview/:id", async (req, res) => {
     const status = response?.status || "pending";
     const submitDateTime = response?.submitDateTime || null;
 
-    res.json({ interview, status, submitDateTime }); // ✅ Include submitDateTime
+    res.json({ interview, status, submitDateTime }); 
   } catch (error) {
-    console.error("❌ Error fetching interview:", error.message);
+    console.error("Error fetching interview:", error.message);
     res.status(500).json({ message: "Error fetching interview" });
   }
 });
 
 
 
-// ✅ Get Interview Results
+// Get Interview Results
 router.get("/interview/:id/results", async (req, res) => {
   try {
     const candidateId = req.user.id;
@@ -253,13 +253,13 @@ router.get("/interview/:id/results", async (req, res) => {
       status: response.status,
     });
   } catch (err) {
-    console.error("❌ Error fetching result:", err.message);
+    console.error("Error fetching result:", err.message);
     res.status(500).json({ message: "Error fetching result" });
   }
 });
 
 
-// ✅ Submit Interview Answers setup
+// Submit Interview Answers setup
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
@@ -274,7 +274,7 @@ const upload = multer({
   limits: { fileSize: 200 * 1024 * 1024 }, // Allow up to 200MB file uploads
 });
 
-// ✅ Submit Interview Answers
+// Submit Interview Answers
 router.post("/interview/:id/submit",
   upload.array("fileAnswers", 5),
   async (req, res) => {
@@ -397,7 +397,7 @@ router.post("/interview/:id/submit",
       return res.json({ message: "Submitted & analyzed", marks: resp.marks, analyses });
     }
     catch (err) {
-      console.error("❌ submit error:", err);
+      console.error("submit error:", err);
       return res.status(500).json({ message: "Server error", error: err.message });
     }
   }
@@ -405,7 +405,7 @@ router.post("/interview/:id/submit",
 
 
 //---------------faq pages------------------//
-// ✅ Get FAQ Details
+//Get FAQ Details
 router.get("/faq", (req, res) => {
   res.json({ message: "FAQ Page Loaded" });
 });

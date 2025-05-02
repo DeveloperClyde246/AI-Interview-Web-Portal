@@ -19,7 +19,7 @@ const CandidateInterviews = () => {
         setInterviews(res.data.interviews);
         setLoading(false);
       } catch (error) {
-        console.error("❌ Error fetching interviews:", error.message);
+        console.error("Error fetching interviews:", error.message);
         setLoading(false);
       }
     };

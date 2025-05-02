@@ -158,8 +158,8 @@
     font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 1.5rem;
-    color: #e74c3c;              /* red-ish to stand out */
-    background: #ffecec;         /* very light pink background */
+    color: #e74c3c;             
+    background: #ffecec;        
     padding: 0.5rem 1rem;
     border-radius: 5px;
   }

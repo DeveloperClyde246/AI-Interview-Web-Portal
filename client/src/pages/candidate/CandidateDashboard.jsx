@@ -21,7 +21,7 @@ const CandidateDashboard = () => {
       setNotifications(res.data.notifications || []);
       setInterviews(res.data.interviews || []);
     } catch (err) {
-      console.error("❌ Error loading candidate dashboard:", err.message);
+      console.error("Error loading candidate dashboard:", err.message);
       setError("Error loading dashboard.");
     }
   };

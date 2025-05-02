@@ -33,7 +33,7 @@ const CandidateNotificationDetails = () => {
           }
         }
       } catch (err) {
-        console.error("❌ Error fetching notification:", err);
+        console.error("Error fetching notification:", err);
         setError("Error fetching notification.");
       }
     };
@@ -47,13 +47,13 @@ const CandidateNotificationDetails = () => {
         `http://localhost:5000/candidate/notifications/${id}/delete`,
         { withCredentials: true }
       );
-      alert("✅ Notification deleted successfully!");
+      alert("Notification deleted successfully!");
       navigate("/candidate");
     } catch (err) {
       if (err.response && err.response.status === 403) {
         alert(err.response.data.message);
       } else {
-        console.error("❌ Error deleting notification:", err);
+        console.error("Error deleting notification:", err);
         alert("Error deleting notification. Please try again.");
       }
     }

@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 
 const router = express.Router();
 
-// // ✅ Check and add notifications for interviews happening tomorrow
+// // Check and add notifications for interviews happening tomorrow
 // const checkUpcomingInterviews = async () => {
 //   try {
 //     const tomorrow = new Date();
@@ -36,10 +36,10 @@ const router = express.Router();
 //     }
 
 //     console.log(
-//       `✅ Notifications sent for ${upcomingInterviews.length} upcoming interviews.`
+//       `Notifications sent for ${upcomingInterviews.length} upcoming interviews.`
 //     );
 //   } catch (error) {
-//     console.error("❌ Error checking upcoming interviews:", error.message);
+//     console.error("Error checking upcoming interviews:", error.message);
 //   }
 // };
 
@@ -47,7 +47,7 @@ const router = express.Router();
 
 
 
-// ✅ Get notification details
+// Get notification details
 router.get("/:id", async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);
@@ -55,14 +55,14 @@ router.get("/:id", async (req, res) => {
 
     res.json({ notification });
   } catch (error) {
-    console.error("❌ Error fetching notification details:", error.message);
+    console.error("Error fetching notification details:", error.message);
     res.status(500).json({ message: "Error fetching notification details" });
   }
 });
 
 
 
-// ✅ Delete notification
+// Delete notification
 router.post("/:id/delete", async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);
@@ -81,7 +81,7 @@ router.post("/:id/delete", async (req, res) => {
     // Find the corresponding interview by title
     const interview = await Interview.findOne({ title: interviewTitle });
     if (!interview) {
-      // ✅ Allow deleting notification if interview is not found
+      // Allow deleting notification if interview is not found
       await Notification.findByIdAndDelete(req.params.id);
       return res.json({ message: "Notification deleted successfully" });
     }
@@ -99,7 +99,7 @@ router.post("/:id/delete", async (req, res) => {
     await Notification.findByIdAndDelete(req.params.id);
     res.json({ message: "Notification deleted successfully" });
   } catch (error) {
-    console.error("❌ Error deleting notification:", error.message);
+    console.error("Error deleting notification:", error.message);
     res.status(500).json({ message: "Error deleting notification" });
   }
 });

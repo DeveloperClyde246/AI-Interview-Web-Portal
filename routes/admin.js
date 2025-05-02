@@ -2,16 +2,16 @@ const express = require("express");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const authMiddleware = require("../middleware/authMiddleware");
-const Candidate = require("../models/candidate");
+const Candidate = require("../models/Candidate");
 const Recruiter = require("../models/Recruiter"); 
 const Admin = require("../models/Admin");
 const router = express.Router();
 const Interview = require("../models/Interview");  
 
-// ✅ Only allow admin users
+// Only allow admin users
 router.use(authMiddleware(["admin"]));
 
-// ✅ GET all users
+// GET all users
 router.get("/", async (req, res) => {
   try {
     const users = await User.find();
@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ POST create new user
+// POST create new user
 router.post("/create", async (req, res) => {
   const { name, email, password, role } = req.body;
   const existingUser = await User.findOne({ email });
@@ -83,7 +83,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-// ✅ POST edit user
+// POST edit user
 router.post("/edit/:id", async (req, res) => {
   const { name, email, role } = req.body;
 
@@ -100,7 +100,7 @@ router.post("/edit/:id", async (req, res) => {
   }
 });
 
-// ✅ POST delete user
+// POST delete user
 router.post("/delete/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -123,7 +123,7 @@ router.post("/delete/:id", async (req, res) => {
   }
 });
 
-// ✅ POST change password
+// POST change password
 router.post("/change-password/:id", async (req, res) => {
   const { newPassword } = req.body;
 
