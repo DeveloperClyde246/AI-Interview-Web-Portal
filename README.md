@@ -1,4 +1,4 @@
-# AI-Interview-FYP-Fullstack
+# AI-Interview-Web-Portal
 
 ## Setup Web App:
 ### Download Node.js
